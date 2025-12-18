@@ -19,6 +19,8 @@ public class TvKeyCapturePlugin extends Plugin {
     // Key codes we're interested in capturing
     private static final int KEYCODE_BACK = KeyEvent.KEYCODE_BACK;
     private static final int KEYCODE_DPAD_LEFT = KeyEvent.KEYCODE_DPAD_LEFT;
+    private static final int KEYCODE_DPAD_DOWN = KeyEvent.KEYCODE_DPAD_DOWN;
+    private static final int KEYCODE_DPAD_UP = KeyEvent.KEYCODE_DPAD_UP;
 
     private View.OnKeyListener keyListener;
     private boolean isListenerAttached = false;
@@ -154,9 +156,10 @@ public class TvKeyCapturePlugin extends Plugin {
             return false;
         }
         
-        // Only process BACK and LEFT ARROW keys
-        if (keyCode != KEYCODE_BACK && keyCode != KEYCODE_DPAD_LEFT) {
-            Log.d(TAG, String.format("Key %d is not BACK or LEFT_ARROW, ignoring", keyCode));
+        // Only process BACK, LEFT ARROW, DOWN, and UP keys
+        if (keyCode != KEYCODE_BACK && keyCode != KEYCODE_DPAD_LEFT 
+            && keyCode != KEYCODE_DPAD_DOWN && keyCode != KEYCODE_DPAD_UP) {
+            Log.d(TAG, String.format("Key %d is not BACK, LEFT_ARROW, ARROW_DOWN, or ARROW_UP, ignoring", keyCode));
             return false;
         }
 
@@ -171,8 +174,14 @@ public class TvKeyCapturePlugin extends Plugin {
         String keyName;
         if (keyCode == KEYCODE_BACK) {
             keyName = "BACK";
-        } else {
+        } else if (keyCode == KEYCODE_DPAD_LEFT) {
             keyName = "LEFT_ARROW";
+        } else if (keyCode == KEYCODE_DPAD_DOWN) {
+            keyName = "ARROW_DOWN";
+        } else if (keyCode == KEYCODE_DPAD_UP) {
+            keyName = "ARROW_UP";
+        } else {
+            keyName = "UNKNOWN";
         }
 
         Log.d(TAG, String.format("Processing %s key (keyCode: %d)", keyName, keyCode));
@@ -216,14 +225,18 @@ public class TvKeyCapturePlugin extends Plugin {
 
         // For BACK key, we need to consume the event to prevent Android's default behavior
         // (closing the activity) from executing before JavaScript receives the event.
-        // For LEFT_ARROW, we return false to allow normal navigation to continue.
+        // For other keys, we also consume them to ensure JavaScript receives them reliably.
         if (keyCode == KEYCODE_BACK) {
             Log.d(TAG, "Consuming BACK key event to prevent default behavior");
             return true; // Consume the event to prevent Activity from closing
         }
         
-        // Return false to allow normal key handling to continue for other keys
-        return false;
+        // For navigation keys (LEFT_ARROW, ARROW_DOWN, ARROW_UP), consume them when modal is open
+        // to ensure JavaScript receives them. When modal is closed, LEFT_ARROW should be consumed
+        // to open the modal, but navigation keys can be allowed to propagate.
+        // For now, consume all to ensure reliable delivery to JavaScript
+        Log.d(TAG, String.format("Consuming %s key event to ensure JavaScript receives it", keyName));
+        return true;
     }
 
     /**

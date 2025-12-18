@@ -1,7 +1,7 @@
 export interface TvKeyCapturePlugin {
   /**
    * Add a listener for key press events.
-   * Only captures BACK and LEFT ARROW keys when the app is in foreground.
+   * Captures BACK, LEFT ARROW, ARROW_DOWN, and ARROW_UP keys when the app is in foreground.
    *
    * @returns A promise that resolves with a PluginListenerHandle
    */
@@ -34,9 +34,9 @@ export interface KeyPressEvent {
 
   /**
    * The key name as a constant string for easy comparison
-   * Possible values: 'BACK' or 'LEFT_ARROW'
+   * Possible values: 'BACK', 'LEFT_ARROW', 'ARROW_DOWN', or 'ARROW_UP'
    */
-  keyName: 'BACK' | 'LEFT_ARROW';
+  keyName: 'BACK' | 'LEFT_ARROW' | 'ARROW_DOWN' | 'ARROW_UP';
 
   /**
    * Timestamp when the key was pressed (milliseconds since epoch)
@@ -54,6 +54,8 @@ export interface PluginListenerHandle {
 export const KeyCodes = {
   BACK: 4, // KeyEvent.KEYCODE_BACK
   LEFT_ARROW: 21, // KeyEvent.KEYCODE_DPAD_LEFT
+  ARROW_DOWN: 20, // KeyEvent.KEYCODE_DPAD_DOWN
+  ARROW_UP: 19, // KeyEvent.KEYCODE_DPAD_UP
 } as const;
 
 /**
@@ -62,4 +64,6 @@ export const KeyCodes = {
 export const KeyNames = {
   BACK: 'BACK' as const,
   LEFT_ARROW: 'LEFT_ARROW' as const,
+  ARROW_DOWN: 'ARROW_DOWN' as const,
+  ARROW_UP: 'ARROW_UP' as const,
 } as const;

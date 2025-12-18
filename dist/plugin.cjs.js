@@ -8,6 +8,8 @@ var core = require('@capacitor/core');
 const KeyCodes = {
     BACK: 4, // KeyEvent.KEYCODE_BACK
     LEFT_ARROW: 21, // KeyEvent.KEYCODE_DPAD_LEFT
+    ARROW_DOWN: 20, // KeyEvent.KEYCODE_DPAD_DOWN
+    ARROW_UP: 19, // KeyEvent.KEYCODE_DPAD_UP
 };
 /**
  * Key name constants for easy comparison in application code
@@ -15,6 +17,8 @@ const KeyCodes = {
 const KeyNames = {
     BACK: 'BACK',
     LEFT_ARROW: 'LEFT_ARROW',
+    ARROW_DOWN: 'ARROW_DOWN',
+    ARROW_UP: 'ARROW_UP',
 };
 
 const TvKeyCapture = core.registerPlugin('TvKeyCapture', {

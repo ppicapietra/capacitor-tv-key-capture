@@ -27,7 +27,7 @@
             "text": "A promise that resolves with a PluginListenerHandle"
           }
         ],
-        "docs": "Add a listener for key press events.\nOnly captures BACK and LEFT ARROW keys when the app is in foreground.",
+        "docs": "Add a listener for key press events.\nCaptures BACK, LEFT ARROW, ARROW_DOWN, and ARROW_UP keys when the app is in foreground.",
         "complexTypes": [
           "PluginListenerHandle",
           "KeyPressEvent"
@@ -101,9 +101,9 @@
         {
           "name": "keyName",
           "tags": [],
-          "docs": "The key name as a constant string for easy comparison\nPossible values: 'BACK' or 'LEFT_ARROW'",
+          "docs": "The key name as a constant string for easy comparison\nPossible values: 'BACK', 'LEFT_ARROW', 'ARROW_DOWN', or 'ARROW_UP'",
           "complexTypes": [],
-          "type": "'BACK' | 'LEFT_ARROW'"
+          "type": "'BACK' | 'LEFT_ARROW' | 'ARROW_DOWN' | 'ARROW_UP'"
         },
         {
           "name": "timestamp",
