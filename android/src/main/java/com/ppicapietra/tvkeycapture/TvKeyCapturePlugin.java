@@ -8,6 +8,7 @@ import android.view.View;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.annotation.CapacitorPlugin;
+import com.getcapacitor.Bridge;
 
 @CapacitorPlugin(name = "TvKeyCapture")
 public class TvKeyCapturePlugin extends Plugin {
@@ -20,31 +21,32 @@ public class TvKeyCapturePlugin extends Plugin {
 
     private View.OnKeyListener keyListener;
     private boolean isListenerAttached = false;
+    private boolean isEnabled = false;
 
     @Override
     public void load() {
         Log.d(TAG, "Plugin load() called");
-        // Create key listener that will be attached to the root view
+        // Create key listener that will be attached to multiple views
         keyListener = (v, keyCode, event) -> {
             // Log ALL key events for debugging
             String keyName = KeyEvent.keyCodeToString(keyCode);
-            Log.d(TAG, String.format("Key event detected - keyCode: %d (%s), action: %s", 
+            Log.d(TAG, String.format("Key event detected on view - keyCode: %d (%s), action: %s, enabled: %s", 
                 keyCode, keyName, 
-                event.getAction() == KeyEvent.ACTION_DOWN ? "DOWN" : "UP"));
+                event.getAction() == KeyEvent.ACTION_DOWN ? "DOWN" : "UP",
+                isEnabled));
             
-            // Only handle key down events
-            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            // Only handle if enabled and key down events
+            if (isEnabled && event.getAction() == KeyEvent.ACTION_DOWN) {
                 return handleKeyEvent(keyCode);
             }
             return false;
         };
 
-        // Don't attach listener on load - wait for explicit activation from JS
         Log.d(TAG, "Listener created but not attached yet (will be attached when session is active)");
     }
 
     /**
-     * Attach key listener to the root view of the activity
+     * Attach key listener to multiple views for better coverage
      */
     private void attachKeyListener(Activity activity) {
         if (isListenerAttached) {
@@ -52,22 +54,56 @@ public class TvKeyCapturePlugin extends Plugin {
             return;
         }
         
-        View rootView = activity.getWindow().getDecorView().getRootView();
-        if (rootView != null) {
-            Log.d(TAG, "Attaching key listener to root view");
-            rootView.setFocusableInTouchMode(true);
-            rootView.setFocusable(true);
-            rootView.requestFocus();
-            rootView.setOnKeyListener(keyListener);
+        try {
+            // Try attaching to decor view
+            View decorView = activity.getWindow().getDecorView();
+            if (decorView != null) {
+                Log.d(TAG, "Attaching key listener to decor view");
+                decorView.setFocusableInTouchMode(true);
+                decorView.setFocusable(true);
+                decorView.requestFocus();
+                decorView.setOnKeyListener(keyListener);
+            }
+            
+            // Also try root view
+            View rootView = decorView != null ? decorView.getRootView() : null;
+            if (rootView != null && rootView != decorView) {
+                Log.d(TAG, "Attaching key listener to root view");
+                rootView.setFocusableInTouchMode(true);
+                rootView.setFocusable(true);
+                rootView.setOnKeyListener(keyListener);
+            }
+            
+            // Try attaching to the content view (WebView container)
+            View contentView = activity.findViewById(android.R.id.content);
+            if (contentView != null) {
+                Log.d(TAG, "Attaching key listener to content view");
+                contentView.setFocusableInTouchMode(true);
+                contentView.setFocusable(true);
+                contentView.setOnKeyListener(keyListener);
+            }
+            
+            // Also try to get the WebView from the bridge
+            Bridge bridge = getBridge();
+            if (bridge != null) {
+                View webView = bridge.getWebView();
+                if (webView != null) {
+                    Log.d(TAG, "Attaching key listener to WebView");
+                    webView.setFocusableInTouchMode(true);
+                    webView.setFocusable(true);
+                    webView.setOnKeyListener(keyListener);
+                }
+            }
+            
             isListenerAttached = true;
-            Log.d(TAG, "Key listener attached successfully");
-        } else {
-            Log.e(TAG, "Root view is null, cannot attach listener");
+            Log.d(TAG, "Key listener attached successfully to multiple views");
+        } catch (Exception e) {
+            Log.e(TAG, "Error attaching key listener: " + e.getMessage(), e);
         }
     }
 
     /**
-     * Detach key listener from the root view
+     * Detach key listener from views
      */
     private void detachKeyListener(Activity activity) {
         if (!isListenerAttached) {
@@ -75,12 +111,34 @@ public class TvKeyCapturePlugin extends Plugin {
             return;
         }
         
-        View rootView = activity.getWindow().getDecorView().getRootView();
-        if (rootView != null) {
-            Log.d(TAG, "Detaching key listener from root view");
-            rootView.setOnKeyListener(null);
+        try {
+            View decorView = activity.getWindow().getDecorView();
+            if (decorView != null) {
+                decorView.setOnKeyListener(null);
+            }
+            
+            View rootView = decorView != null ? decorView.getRootView() : null;
+            if (rootView != null && rootView != decorView) {
+                rootView.setOnKeyListener(null);
+            }
+            
+            View contentView = activity.findViewById(android.R.id.content);
+            if (contentView != null) {
+                contentView.setOnKeyListener(null);
+            }
+            
+            Bridge bridge = getBridge();
+            if (bridge != null) {
+                View webView = bridge.getWebView();
+                if (webView != null) {
+                    webView.setOnKeyListener(null);
+                }
+            }
+            
             isListenerAttached = false;
             Log.d(TAG, "Key listener detached successfully");
+        } catch (Exception e) {
+            Log.e(TAG, "Error detaching key listener: " + e.getMessage(), e);
         }
     }
 
@@ -88,7 +146,12 @@ public class TvKeyCapturePlugin extends Plugin {
      * Handle key events and notify listeners if it's a key we're interested in
      */
     private boolean handleKeyEvent(int keyCode) {
-        Log.d(TAG, String.format("handleKeyEvent called with keyCode: %d", keyCode));
+        Log.d(TAG, String.format("handleKeyEvent called with keyCode: %d, isEnabled: %s", keyCode, isEnabled));
+        
+        if (!isEnabled) {
+            Log.d(TAG, "Key capture is disabled, ignoring");
+            return false;
+        }
         
         // Only process BACK and LEFT ARROW keys
         if (keyCode != KEYCODE_BACK && keyCode != KEYCODE_DPAD_LEFT) {
@@ -128,6 +191,19 @@ public class TvKeyCapturePlugin extends Plugin {
         return false;
     }
 
+    /**
+     * Public method to handle key events from Activity (for MainActivity integration)
+     * This can be called from MainActivity.dispatchKeyEvent() or onKeyDown()
+     */
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (!isEnabled || !isListenerAttached) {
+            return false; // Let the event propagate
+        }
+        
+        Log.d(TAG, String.format("onKeyDown called from Activity - keyCode: %d", keyCode));
+        return handleKeyEvent(keyCode);
+    }
+
     @Override
     protected void handleOnResume() {
         Log.d(TAG, "handleOnResume() called");
@@ -141,14 +217,16 @@ public class TvKeyCapturePlugin extends Plugin {
     @com.getcapacitor.PluginMethod
     public void enable(com.getcapacitor.PluginCall call) {
         Log.d(TAG, "enable() called from JS");
+        isEnabled = true;
         Activity activity = getActivity();
         if (activity != null && keyListener != null) {
             activity.runOnUiThread(() -> {
                 attachKeyListener(activity);
+                Log.d(TAG, "Key capture enabled and listener attached");
             });
             call.resolve();
         } else {
-            Log.e(TAG, "Cannot enable: activity or keyListener is null");
+            Log.e(TAG, "Cannot enable: activity=" + (activity != null) + ", keyListener=" + (keyListener != null));
             call.reject("Activity or keyListener is null");
         }
     }
@@ -159,10 +237,12 @@ public class TvKeyCapturePlugin extends Plugin {
     @com.getcapacitor.PluginMethod
     public void disable(com.getcapacitor.PluginCall call) {
         Log.d(TAG, "disable() called from JS");
+        isEnabled = false;
         Activity activity = getActivity();
         if (activity != null) {
             activity.runOnUiThread(() -> {
                 detachKeyListener(activity);
+                Log.d(TAG, "Key capture disabled and listener detached");
             });
             call.resolve();
         } else {
