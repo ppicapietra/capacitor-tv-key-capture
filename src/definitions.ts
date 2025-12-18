@@ -34,9 +34,9 @@ export interface KeyPressEvent {
 
   /**
    * The key name as a constant string for easy comparison
-   * Possible values: 'BACK', 'LEFT_ARROW', 'ARROW_DOWN', or 'ARROW_UP'
+   * Possible values: 'BACK', 'LEFT_ARROW', 'ARROW_DOWN', 'ARROW_UP', or 'OK'
    */
-  keyName: 'BACK' | 'LEFT_ARROW' | 'ARROW_DOWN' | 'ARROW_UP';
+  keyName: 'BACK' | 'LEFT_ARROW' | 'ARROW_DOWN' | 'ARROW_UP' | 'OK';
 
   /**
    * Timestamp when the key was pressed (milliseconds since epoch)
@@ -56,6 +56,7 @@ export const KeyCodes = {
   LEFT_ARROW: 21, // KeyEvent.KEYCODE_DPAD_LEFT
   ARROW_DOWN: 20, // KeyEvent.KEYCODE_DPAD_DOWN
   ARROW_UP: 19, // KeyEvent.KEYCODE_DPAD_UP
+  OK: 23, // KeyEvent.KEYCODE_DPAD_CENTER (OK button on remote)
 } as const;
 
 /**
@@ -66,4 +67,5 @@ export const KeyNames = {
   LEFT_ARROW: 'LEFT_ARROW' as const,
   ARROW_DOWN: 'ARROW_DOWN' as const,
   ARROW_UP: 'ARROW_UP' as const,
+  OK: 'OK' as const,
 } as const;

@@ -101,9 +101,9 @@
         {
           "name": "keyName",
           "tags": [],
-          "docs": "The key name as a constant string for easy comparison\nPossible values: 'BACK', 'LEFT_ARROW', 'ARROW_DOWN', or 'ARROW_UP'",
+          "docs": "The key name as a constant string for easy comparison\nPossible values: 'BACK', 'LEFT_ARROW', 'ARROW_DOWN', 'ARROW_UP', or 'OK'",
           "complexTypes": [],
-          "type": "'BACK' | 'LEFT_ARROW' | 'ARROW_DOWN' | 'ARROW_UP'"
+          "type": "'BACK' | 'LEFT_ARROW' | 'ARROW_DOWN' | 'ARROW_UP' | 'OK'"
         },
         {
           "name": "timestamp",

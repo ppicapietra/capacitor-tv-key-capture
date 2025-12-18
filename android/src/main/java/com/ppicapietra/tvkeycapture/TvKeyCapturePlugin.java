@@ -21,6 +21,7 @@ public class TvKeyCapturePlugin extends Plugin {
     private static final int KEYCODE_DPAD_LEFT = KeyEvent.KEYCODE_DPAD_LEFT;
     private static final int KEYCODE_DPAD_DOWN = KeyEvent.KEYCODE_DPAD_DOWN;
     private static final int KEYCODE_DPAD_UP = KeyEvent.KEYCODE_DPAD_UP;
+    private static final int KEYCODE_DPAD_CENTER = KeyEvent.KEYCODE_DPAD_CENTER; // OK button
 
     private View.OnKeyListener keyListener;
     private boolean isListenerAttached = false;
@@ -156,10 +157,11 @@ public class TvKeyCapturePlugin extends Plugin {
             return false;
         }
         
-        // Only process BACK, LEFT ARROW, DOWN, and UP keys
+        // Only process BACK, LEFT ARROW, DOWN, UP, and OK (DPAD_CENTER) keys
         if (keyCode != KEYCODE_BACK && keyCode != KEYCODE_DPAD_LEFT 
-            && keyCode != KEYCODE_DPAD_DOWN && keyCode != KEYCODE_DPAD_UP) {
-            Log.d(TAG, String.format("Key %d is not BACK, LEFT_ARROW, ARROW_DOWN, or ARROW_UP, ignoring", keyCode));
+            && keyCode != KEYCODE_DPAD_DOWN && keyCode != KEYCODE_DPAD_UP
+            && keyCode != KEYCODE_DPAD_CENTER) {
+            Log.d(TAG, String.format("Key %d is not BACK, LEFT_ARROW, ARROW_DOWN, ARROW_UP, or OK, ignoring", keyCode));
             return false;
         }
 
@@ -180,6 +182,8 @@ public class TvKeyCapturePlugin extends Plugin {
             keyName = "ARROW_DOWN";
         } else if (keyCode == KEYCODE_DPAD_UP) {
             keyName = "ARROW_UP";
+        } else if (keyCode == KEYCODE_DPAD_CENTER) {
+            keyName = "OK";
         } else {
             keyName = "UNKNOWN";
         }

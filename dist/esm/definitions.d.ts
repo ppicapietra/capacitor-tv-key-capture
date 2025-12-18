@@ -26,9 +26,9 @@ export interface KeyPressEvent {
     keyCode: number;
     /**
      * The key name as a constant string for easy comparison
-     * Possible values: 'BACK', 'LEFT_ARROW', 'ARROW_DOWN', or 'ARROW_UP'
+     * Possible values: 'BACK', 'LEFT_ARROW', 'ARROW_DOWN', 'ARROW_UP', or 'OK'
      */
-    keyName: 'BACK' | 'LEFT_ARROW' | 'ARROW_DOWN' | 'ARROW_UP';
+    keyName: 'BACK' | 'LEFT_ARROW' | 'ARROW_DOWN' | 'ARROW_UP' | 'OK';
     /**
      * Timestamp when the key was pressed (milliseconds since epoch)
      */
@@ -45,6 +45,7 @@ export declare const KeyCodes: {
     readonly LEFT_ARROW: 21;
     readonly ARROW_DOWN: 20;
     readonly ARROW_UP: 19;
+    readonly OK: 23;
 };
 /**
  * Key name constants for easy comparison in application code
@@ -54,4 +55,5 @@ export declare const KeyNames: {
     readonly LEFT_ARROW: "LEFT_ARROW";
     readonly ARROW_DOWN: "ARROW_DOWN";
     readonly ARROW_UP: "ARROW_UP";
+    readonly OK: "OK";
 };
