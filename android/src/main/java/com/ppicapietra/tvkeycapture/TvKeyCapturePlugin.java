@@ -185,10 +185,16 @@ public class TvKeyCapturePlugin extends Plugin {
 
         // Notify all active listeners using Capacitor's built-in listener system
         Log.d(TAG, String.format("Notifying listeners about %s key press", keyName));
-        Log.d(TAG, String.format("Event data: keyCode=%d, keyName=%s, timestamp=%d", 
-            eventData.getInt("keyCode"), 
-            eventData.getString("keyName"), 
-            eventData.getLong("timestamp")));
+        
+        // Log event data safely
+        try {
+            Log.d(TAG, String.format("Event data: keyCode=%d, keyName=%s, timestamp=%d", 
+                eventData.getInt("keyCode"), 
+                eventData.getString("keyName"), 
+                eventData.getLong("timestamp")));
+        } catch (Exception e) {
+            Log.w(TAG, "Error logging event data: " + e.getMessage());
+        }
         
         // Check if there are any listeners registered
         Bridge bridge = getBridge();
