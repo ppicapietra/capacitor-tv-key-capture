@@ -9,6 +9,7 @@ import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.Bridge;
+import com.getcapacitor.PluginHandle;
 
 @CapacitorPlugin(name = "TvKeyCapture")
 public class TvKeyCapturePlugin extends Plugin {
@@ -184,7 +185,28 @@ public class TvKeyCapturePlugin extends Plugin {
 
         // Notify all active listeners using Capacitor's built-in listener system
         Log.d(TAG, String.format("Notifying listeners about %s key press", keyName));
+        Log.d(TAG, String.format("Event data: keyCode=%d, keyName=%s, timestamp=%d", 
+            eventData.getInt("keyCode"), 
+            eventData.getString("keyName"), 
+            eventData.getLong("timestamp")));
+        
+        // Check if there are any listeners registered
+        Bridge bridge = getBridge();
+        if (bridge != null) {
+            PluginHandle pluginHandle = bridge.getPlugin("TvKeyCapture");
+            if (pluginHandle != null) {
+                Log.d(TAG, "Plugin handle found, checking listeners...");
+                // Log listener count if available
+                Log.d(TAG, "Calling notifyListeners()...");
+            } else {
+                Log.w(TAG, "Plugin handle is null!");
+            }
+        } else {
+            Log.w(TAG, "Bridge is null!");
+        }
+        
         notifyListeners("keyPress", eventData);
+        Log.d(TAG, "notifyListeners() called, checking if listeners received the event...");
 
         // Return false to allow normal key handling to continue
         // Return true if you want to consume the event and prevent default behavior
@@ -216,19 +238,37 @@ public class TvKeyCapturePlugin extends Plugin {
      */
     @com.getcapacitor.PluginMethod
     public void enable(com.getcapacitor.PluginCall call) {
-        Log.d(TAG, "enable() called from JS");
+        Log.d(TAG, "========== enable() called from JS ==========");
+        Log.d(TAG, "isEnabled before: " + isEnabled);
+        Log.d(TAG, "isListenerAttached before: " + isListenerAttached);
+        
+        // Check if listeners are registered
+        Bridge bridge = getBridge();
+        if (bridge != null) {
+            PluginHandle pluginHandle = bridge.getPlugin("TvKeyCapture");
+            if (pluginHandle != null) {
+                Log.d(TAG, "Plugin handle found for TvKeyCapture");
+            } else {
+                Log.w(TAG, "WARNING: Plugin handle is null - listeners may not be registered yet!");
+            }
+        }
+        
         isEnabled = true;
         Activity activity = getActivity();
         if (activity != null && keyListener != null) {
             activity.runOnUiThread(() -> {
                 attachKeyListener(activity);
                 Log.d(TAG, "Key capture enabled and listener attached");
+                Log.d(TAG, "isEnabled after: " + isEnabled);
+                Log.d(TAG, "isListenerAttached after: " + isListenerAttached);
             });
             call.resolve();
+            Log.d(TAG, "enable() resolved successfully");
         } else {
             Log.e(TAG, "Cannot enable: activity=" + (activity != null) + ", keyListener=" + (keyListener != null));
             call.reject("Activity or keyListener is null");
         }
+        Log.d(TAG, "========== enable() finished ==========");
     }
 
     /**
