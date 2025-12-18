@@ -43,6 +43,26 @@
         "docs": "Remove all listeners for key press events.",
         "complexTypes": [],
         "slug": "removealllisteners"
+      },
+      {
+        "name": "enable",
+        "signature": "() => Promise<void>",
+        "parameters": [],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "Enable key capture (call this when session is active)",
+        "complexTypes": [],
+        "slug": "enable"
+      },
+      {
+        "name": "disable",
+        "signature": "() => Promise<void>",
+        "parameters": [],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "Disable key capture (call this when session ends)",
+        "complexTypes": [],
+        "slug": "disable"
       }
     ],
     "properties": []

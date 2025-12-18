@@ -14,6 +14,16 @@ export interface TvKeyCapturePlugin {
    * Remove all listeners for key press events.
    */
   removeAllListeners(): Promise<void>;
+
+  /**
+   * Enable key capture (call this when session is active)
+   */
+  enable(): Promise<void>;
+
+  /**
+   * Disable key capture (call this when session ends)
+   */
+  disable(): Promise<void>;
 }
 
 export interface KeyPressEvent {

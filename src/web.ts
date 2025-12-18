@@ -15,4 +15,14 @@ export class TvKeyCaptureWeb extends WebPlugin implements TvKeyCapturePlugin {
     console.warn('TvKeyCapture: removeAllListeners() no está disponible en web.');
     throw this.unimplemented('removeAllListeners() no está implementado en web.');
   }
+
+  async enable(): Promise<void> {
+    console.warn('TvKeyCapture: enable() no está disponible en web.');
+    throw this.unimplemented('enable() no está implementado en web.');
+  }
+
+  async disable(): Promise<void> {
+    console.warn('TvKeyCapture: disable() no está disponible en web.');
+    throw this.unimplemented('disable() no está implementado en web.');
+  }
 }

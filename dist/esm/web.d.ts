@@ -3,4 +3,6 @@ import type { KeyPressEvent, PluginListenerHandle, TvKeyCapturePlugin } from './
 export declare class TvKeyCaptureWeb extends WebPlugin implements TvKeyCapturePlugin {
     addListener(_eventName: 'keyPress', _listenerFunc: (event: KeyPressEvent) => void): Promise<PluginListenerHandle>;
     removeAllListeners(): Promise<void>;
+    enable(): Promise<void>;
+    disable(): Promise<void>;
 }
