@@ -214,8 +214,15 @@ public class TvKeyCapturePlugin extends Plugin {
         notifyListeners("keyPress", eventData);
         Log.d(TAG, "notifyListeners() called, checking if listeners received the event...");
 
-        // Return false to allow normal key handling to continue
-        // Return true if you want to consume the event and prevent default behavior
+        // For BACK key, we need to consume the event to prevent Android's default behavior
+        // (closing the activity) from executing before JavaScript receives the event.
+        // For LEFT_ARROW, we return false to allow normal navigation to continue.
+        if (keyCode == KEYCODE_BACK) {
+            Log.d(TAG, "Consuming BACK key event to prevent default behavior");
+            return true; // Consume the event to prevent Activity from closing
+        }
+        
+        // Return false to allow normal key handling to continue for other keys
         return false;
     }
 
