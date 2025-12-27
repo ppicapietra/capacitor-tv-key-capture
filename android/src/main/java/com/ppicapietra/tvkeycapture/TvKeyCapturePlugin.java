@@ -238,10 +238,11 @@ public class TvKeyCapturePlugin extends Plugin {
         
         try {
             Log.d(TAG, "Event data being sent: " + eventData.toString());
+            Log.d(TAG, "About to call notifyListeners('keyPress', eventData)...");
             notifyListeners("keyPress", eventData);
             Log.d(TAG, "notifyListeners() called successfully, checking if listeners received the event...");
         } catch (Exception e) {
-            Log.e(TAG, "Error calling notifyListeners(): " + e.getMessage(), e);
+            Log.e(TAG, "❌ Error calling notifyListeners(): " + e.getMessage(), e);
             e.printStackTrace();
         }
 
