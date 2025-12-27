@@ -1,6 +1,6 @@
 {
   "name": "@ppicapietra/capacitor-tv-key-capture",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Plugin for capturing remote control key events (BACK and LEFT ARROW) on Android TV",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",

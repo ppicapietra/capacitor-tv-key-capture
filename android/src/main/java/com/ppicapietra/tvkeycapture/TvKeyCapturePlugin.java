@@ -215,8 +215,20 @@ public class TvKeyCapturePlugin extends Plugin {
             PluginHandle pluginHandle = bridge.getPlugin("TvKeyCapture");
             if (pluginHandle != null) {
                 Log.d(TAG, "Plugin handle found, checking listeners...");
-                // Log listener count if available
-                Log.d(TAG, "Calling notifyListeners()...");
+                
+                // Try to check if listeners are registered
+                try {
+                    // Use reflection to check listener count if possible
+                    java.lang.reflect.Method getListenersMethod = pluginHandle.getClass().getMethod("getListeners", String.class);
+                    if (getListenersMethod != null) {
+                        Object listeners = getListenersMethod.invoke(pluginHandle, "keyPress");
+                        Log.d(TAG, "Listeners for 'keyPress': " + (listeners != null ? listeners.toString() : "null"));
+                    }
+                } catch (Exception e) {
+                    Log.d(TAG, "Could not check listener count (this is normal): " + e.getMessage());
+                }
+                
+                Log.d(TAG, "Calling notifyListeners() for event 'keyPress'...");
             } else {
                 Log.w(TAG, "Plugin handle is null!");
             }
@@ -224,8 +236,14 @@ public class TvKeyCapturePlugin extends Plugin {
             Log.w(TAG, "Bridge is null!");
         }
         
-        notifyListeners("keyPress", eventData);
-        Log.d(TAG, "notifyListeners() called, checking if listeners received the event...");
+        try {
+            Log.d(TAG, "Event data being sent: " + eventData.toString());
+            notifyListeners("keyPress", eventData);
+            Log.d(TAG, "notifyListeners() called successfully, checking if listeners received the event...");
+        } catch (Exception e) {
+            Log.e(TAG, "Error calling notifyListeners(): " + e.getMessage(), e);
+            e.printStackTrace();
+        }
 
         // For BACK key, we need to consume the event to prevent Android's default behavior
         // (closing the activity) from executing before JavaScript receives the event.
