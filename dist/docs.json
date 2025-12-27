@@ -1,0 +1,121 @@
+{
+  "api": {
+    "name": "TvKeyCapturePlugin",
+    "slug": "tvkeycaptureplugin",
+    "docs": "",
+    "tags": [],
+    "methods": [
+      {
+        "name": "addListener",
+        "signature": "(eventName: 'keyPress', listenerFunc: (event: KeyPressEvent) => void) => Promise<PluginListenerHandle>",
+        "parameters": [
+          {
+            "name": "eventName",
+            "docs": "",
+            "type": "'keyPress'"
+          },
+          {
+            "name": "listenerFunc",
+            "docs": "",
+            "type": "(event: KeyPressEvent) => void"
+          }
+        ],
+        "returns": "Promise<PluginListenerHandle>",
+        "tags": [
+          {
+            "name": "returns",
+            "text": "A promise that resolves with a PluginListenerHandle"
+          }
+        ],
+        "docs": "Add a listener for key press events.\nCaptures BACK, LEFT ARROW, ARROW_DOWN, and ARROW_UP keys when the app is in foreground.",
+        "complexTypes": [
+          "PluginListenerHandle",
+          "KeyPressEvent"
+        ],
+        "slug": "addlistenerkeypress-"
+      },
+      {
+        "name": "removeAllListeners",
+        "signature": "() => Promise<void>",
+        "parameters": [],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "Remove all listeners for key press events.",
+        "complexTypes": [],
+        "slug": "removealllisteners"
+      },
+      {
+        "name": "enable",
+        "signature": "() => Promise<void>",
+        "parameters": [],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "Enable key capture (call this when session is active)",
+        "complexTypes": [],
+        "slug": "enable"
+      },
+      {
+        "name": "disable",
+        "signature": "() => Promise<void>",
+        "parameters": [],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "Disable key capture (call this when session ends)",
+        "complexTypes": [],
+        "slug": "disable"
+      }
+    ],
+    "properties": []
+  },
+  "interfaces": [
+    {
+      "name": "PluginListenerHandle",
+      "slug": "pluginlistenerhandle",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "remove",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "() => Promise<void>"
+        }
+      ]
+    },
+    {
+      "name": "KeyPressEvent",
+      "slug": "keypressevent",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "keyCode",
+          "tags": [],
+          "docs": "The key code as defined in Android KeyEvent",
+          "complexTypes": [],
+          "type": "number"
+        },
+        {
+          "name": "keyName",
+          "tags": [],
+          "docs": "The key name as a constant string for easy comparison\nPossible values: 'BACK', 'LEFT_ARROW', 'ARROW_DOWN', 'ARROW_UP', or 'OK'",
+          "complexTypes": [],
+          "type": "'BACK' | 'LEFT_ARROW' | 'ARROW_DOWN' | 'ARROW_UP' | 'OK'"
+        },
+        {
+          "name": "timestamp",
+          "tags": [],
+          "docs": "Timestamp when the key was pressed (milliseconds since epoch)",
+          "complexTypes": [],
+          "type": "number"
+        }
+      ]
+    }
+  ],
+  "enums": [],
+  "typeAliases": [],
+  "pluginConfigs": []
+}
